@@ -31,23 +31,28 @@ def main():
 
     pygame.display.set_caption("algorithm")
 
-    clock = pygame.time.Clock()
-
     running = True
 
 
+    
     #bubblesort
     def bubblesort(list):
         #Swap the elements to arrange in order
         random.shuffle(list)
+        arrayComparisons = 0
         for iter_num in range(len(list)-1,0,-1):
             for idx in range(iter_num):
                 if list[idx]>list[idx+1]:
                     temp = list[idx]
                     list[idx] = list[idx+1]
                     list[idx+1] = temp
-                bar(list, windowWidth, windowHeight, 25, 4, False)
-
+                arrayComparisons += 1
+                    
+                bar(list, windowWidth, windowHeight, 25, 2, False)
+                writeComparisons(arrayComparisons)
+                selectBar(idx + 1, arrayOfPositions)
+                time.sleep(0.0005)
+        bar(list, windowWidth, windowHeight, 25, 2, False)
 
     #draw bars function
     def bar(list, windowWidthF, windowHeightF, margin, gap, debug):
@@ -62,6 +67,8 @@ def main():
         R = 255
         G = 0
         B = 50
+        global arrayOfPositions
+        arrayOfPositions = []
 
         #print values for debugging
         if debug == True:
@@ -78,9 +85,21 @@ def main():
             barY = windowHeightF - margin - barH 
             #draw bar
             pygame.draw.rect(window, (R, G, B + 205 / totalBars * i), [(barX) + gap * i - 1 + barW * i - 1, barY, barW, barH]) 
+            arrayOfPositions.append((barX + gap * i - 1 + barW * i - 1, barY, barW, barH))
 
         #update display
         pygame.display.update()
+
+
+    def selectBar(position, posList):
+        pygame.draw.rect(window, (255, 255, 255), [posList[position][0], posList[position][1], posList[position][2], posList[position][3]])
+        pygame.display.update()
+
+
+    def writeComparisons(var):
+        font = pygame.font.Font("C:\Windows\Fonts\calibri.ttf", 50)
+        rendered = font.render("Array Accesses: {}".format(var), False, (255, 255, 255))
+        window.blit(rendered, (20, 20))
 
 
     #event loop
@@ -97,11 +116,17 @@ def main():
                     genListRandom(listOfNums, int(input("Number of bars: ")), 1, maxList)
                 elif listType == "asc":
                     maxList = int(input("Largest value: "))
-                    genListAsc(listOfNums, maxList)
+                    random.shuffle(genListAsc(listOfNums, maxList))
 
+                
                 bubblesort(listOfNums)
-                '''bar(listOfNums, windowWidth, windowHeight, 25, 7, True)'''
     
 
 #run code
 main()
+
+'''
+to do:
+automate gap calculation
+add more algorithms
+'''
