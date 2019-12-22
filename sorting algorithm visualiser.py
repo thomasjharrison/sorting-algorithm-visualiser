@@ -25,7 +25,7 @@ def main():
     #initialise screen & game
     pygame.init()
 
-    windowWidth = 1600
+    windowWidth = 900
     windowHeight = 900
     window = pygame.display.set_mode((windowWidth, windowHeight))
 
@@ -44,7 +44,7 @@ def main():
                 if list[value] > list[value + 1]:
                     list[value + 1], list[value] = list[value], list[value + 1]
                 arrayComparisons += 1
-                updateScreen(listOfNums, value)
+                updateScreen(listOfNums, [value])
             limValue -= 1
         updateScreen(listOfNums, [value])
 
@@ -113,11 +113,11 @@ def main():
 
     
     def updateScreen(list, index):
-        bar(list, windowWidth, windowHeight, 30, 1, False)
+        bar(list, windowWidth, windowHeight, 30, 3, False)
         writeComparisons(arrayComparisons)
         for i in range(0, len(index)):
             selectBar(index[i], arrayOfPositions)
-        time.sleep(0.0002)
+        time.sleep(0.01)
         pygame.display.update()
 
 
