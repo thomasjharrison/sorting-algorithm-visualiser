@@ -29,30 +29,40 @@ def main():
     windowHeight = 900
     window = pygame.display.set_mode((windowWidth, windowHeight))
 
-    pygame.display.set_caption("algorithm")
-
     running = True
 
 
-    
+    #sorting algorithmns
     #bubblesort
-    def bubblesort(list):
-        #Swap the elements to arrange in order
+    def bubbleSort(list):
         random.shuffle(list)
+        global arrayComparisons
         arrayComparisons = 0
-        for iter_num in range(len(list)-1,0,-1):
-            for idx in range(iter_num):
-                if list[idx]>list[idx+1]:
-                    temp = list[idx]
-                    list[idx] = list[idx+1]
-                    list[idx+1] = temp
+        limValue = len(list)
+        for index in range(0, len(list)):
+            for value in range(0, limValue - 1):
+                if list[value] > list[value + 1]:
+                    list[value + 1], list[value] = list[value], list[value + 1]
                 arrayComparisons += 1
-                    
-                bar(list, windowWidth, windowHeight, 25, 2, False)
-                writeComparisons(arrayComparisons)
-                selectBar(idx + 1, arrayOfPositions)
-                time.sleep(0.0005)
-        bar(list, windowWidth, windowHeight, 25, 2, False)
+                updateScreen(listOfNums, value)
+            limValue -= 1
+        updateScreen(listOfNums, [value])
+
+    
+    #selection sort
+    def selectionSort(list):
+        random.shuffle(list)
+        global arrayComparisons
+        arrayComparisons = 0
+        for index in range(0, len(list)):
+            minValue = index
+            for value in range(index, len(list)):
+                if list[minValue] > list[value]:
+                    minValue = value
+                arrayComparisons += 1
+                updateScreen(listOfNums, [value, index])
+            list[index], list[minValue] = list[minValue], list[index]
+      
 
     #draw bars function
     def bar(list, windowWidthF, windowHeightF, margin, gap, debug):
@@ -88,18 +98,27 @@ def main():
             arrayOfPositions.append((barX + gap * i - 1 + barW * i - 1, barY, barW, barH))
 
         #update display
-        pygame.display.update()
+        #pygame.display.update()
 
 
     def selectBar(position, posList):
         pygame.draw.rect(window, (255, 255, 255), [posList[position][0], posList[position][1], posList[position][2], posList[position][3]])
-        pygame.display.update()
+        #pygame.display.update()
 
 
     def writeComparisons(var):
-        font = pygame.font.Font("C:\Windows\Fonts\calibri.ttf", 50)
-        rendered = font.render("Array Accesses: {}".format(var), False, (255, 255, 255))
+        font = pygame.font.Font("C:\Windows\Fonts\calibri.ttf", 40)
+        rendered = font.render("Array Comparisons: {}".format(var), False, (255, 255, 255))
         window.blit(rendered, (20, 20))
+
+    
+    def updateScreen(list, index):
+        bar(list, windowWidth, windowHeight, 30, 1, False)
+        writeComparisons(arrayComparisons)
+        for i in range(0, len(index)):
+            selectBar(index[i], arrayOfPositions)
+        time.sleep(0.0002)
+        pygame.display.update()
 
 
     #event loop
@@ -118,8 +137,13 @@ def main():
                     maxList = int(input("Largest value: "))
                     random.shuffle(genListAsc(listOfNums, maxList))
 
-                
-                bubblesort(listOfNums)
+                sortType = input("Chose a sort: ")
+                if sortType == "bubble":
+                    bubbleSort(listOfNums)
+                    pygame.display.set_caption("bubble sort algorithm")
+                if sortType == "selection":
+                    selectionSort(listOfNums)
+                    pygame.display.set_caption("selection sort algorithm")
     
 
 #run code
